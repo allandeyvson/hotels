@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.hotels.domains.Hotel;
 import br.com.hotels.domains.Reserva;
 import br.com.hotels.dto.ReservaDTO;
 import br.com.hotels.response.Response;
@@ -62,6 +63,33 @@ public class ReservaController {
 		List<Reserva> reservas = reservaService.findAll();
 		response.setData(reservas);
 
+		return new ResponseEntity<Response<List<Reserva>>>(response, HttpStatus.OK);
+	}
+	
+	@GetMapping("/numeroReserva/{numeroReserva}")
+	public ResponseEntity<Response<Reserva>> findByNumero(@PathVariable String numeroReserva) {
+		Response<Reserva> response = new Response<Reserva>();
+
+		Optional<Reserva> reserva = reservaService.findByNumeroReserva(numeroReserva);
+		if(reserva.isEmpty()) {
+			response.addErrors("A reserva de numero " + numeroReserva + " nao existe na api.");
+			return new ResponseEntity<Response<Reserva>>(response, HttpStatus.NOT_FOUND);
+		}
+		
+		response.setData(reserva.get());
+		return new ResponseEntity<Response<Reserva>>(response, HttpStatus.OK);
+	}
+	
+	@GetMapping("/hotel/{hotel}")
+	public ResponseEntity<Response<List<Reserva>>> findByHotel(@PathVariable Hotel hotel) {
+		Response<List<Reserva>> response = new Response<List<Reserva>>();
+
+		Optional<List<Reserva>> reservas = reservaService.findByHotel(hotel);
+		if(reservas.isPresent() && reservas.get().isEmpty()) {
+			response.addErrors("Nao existem reservas cadastradas para o hotel " + hotel.name());
+			return new ResponseEntity<Response<List<Reserva>>>(response, HttpStatus.NOT_FOUND);
+		}
+		response.setData(reservas.get());
 		return new ResponseEntity<Response<List<Reserva>>>(response, HttpStatus.OK);
 	}
 	
