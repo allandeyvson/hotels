@@ -40,3 +40,9 @@ Cria uma nova reserva de acordo com os dados informados no corpo da requisição
   "telefone": "string"
 }
 ```
+###Run 
+mvn spring-boot:run -Dspring.profiles.active=dev
+Por defautl a api pode ser acessada em http://localhost:8080/api/v1/reservas
+
+###Documentação
+Swagger : http://localhost:8080/swagger-ui/index.html
